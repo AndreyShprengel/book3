@@ -79,43 +79,113 @@ function solution1(){
 
 function solution2(){
     // TODO: use the Internet to lookup the GPS coordinates
-    var c0 = {latitude: 39.823, longitude: 105.43}   // Denver
-    var c1 = {latitude: 38.234, longitude: 102.33}   // Boulder
+    var c0 = {latitude: 39.7392, longitude: 104.9903}   // Denver
+    var c1 = {latitude: 40.0274, longitude: 105.2519}   // Boulder
     return geolib.getDistance(c0,c1)/1000 + ' km'
 }
 
 function solution3(){
     var businessesInGilbert = _.filter(items, {city: 'Gilbert'})
     // TODO: find McDonloads and compute the distance between the first two
+    mcd = _.filter(businessesInGilbert, {name: "McDonald's"})
+    var c0 = {latitude: mcd[0].latitude, longitude: mcd[0].longitude}   // Denver
+    var c1 = {latitude: mcd[1].latitude, longitude: mcd[1].longitude}    // Boulder
+    return geolib.getDistance(c0,c1)/1000 + ' km'
+    
     return 'TODO'
 }
 
 function solution4(){
-    return 'TODO'
+    var businessesInGilbert = _.filter(items, {city: 'Phoenix'})
+    // TODO: find McDonloads and compute the distance between the first two
+    mcd = _.filter(businessesInGilbert, {name: "McDonald's"})
+     console.log("mcd", mcd)
+    latitude = _.sum(mcd, 'latitude')/mcd.length
+    longitde = _.sum (mcd, 'longitude')/mcd.length
+    return latitude + "," + longitde
 }
 
 function solution5(){
-    return 'TODO'
+    var businessesInGilbert = _.filter(items, {city: 'Phoenix'})
+    // TODO: find McDonloads and compute the distance between the first two
+    mcd = _.filter(businessesInGilbert, {name: "McDonald's"}).length
+    strbk = _.filter(businessesInGilbert, {name: "Starbucks"}).length
+    if(mcd>strbk){return "MCdonalds"}
+    else {return "Starbuck"}
 }
 
 function solution6(){
-    return 'TODO'
+    var businessesInGilbert = _.filter(items, {city: 'Phoenix'})
+    // TODO: find McDonloads and compute the distance between the first two
+
+    strbk = _.filter(businessesInGilbert, {name: "Starbucks"})
+    most_reviewed = _.max(strbk, function(b){return b.review_count})
+    return "the one on" + most_reviewed.full_address
 }
 
 function solution7(){
-    return 'TODO'
+    var businessesInGilbert = _.filter(items, {city: 'Phoenix'})
+    // TODO: find McDonloads and compute the distance between the first two
+
+    strbk = _.filter(businessesInGilbert, {name: "Starbucks"})
+    mcd = _.filter(businessesInGilbert, {name: "McDonald's"})
+    
+    most_reviewed = _.max(strbk, function(b){return b.review_count})
+    closest = _.min(mcd, function(m)
+    {
+        var c0 = {latitude: m.latitude, longitude: m.longitude}   // Denver
+        var c1 = {latitude: most_reviewed.latitude, longitude: most_reviewed.longitude}    // Boulder
+        return geolib.getDistance(c0,c1)
+    })
+
+    return "the one on" + closest.full_address
 }
 
 function solution8(){
-    return 'TODO'
+    var businessesInGilbert = _.filter(items, {city: 'Phoenix'})
+    // TODO: find McDonloads and compute the distance between the first two
+
+    strbk = _.filter(businessesInGilbert, {name: "Starbucks"})
+    coffee_shops = _.filter(businessesInGilbert, function(b)
+    {
+        return _.includes(b.categories, "Coffee & Tea")
+    })
+    console.log("coffee", coffee_shops)
+    most_reviewed = _.max(strbk, function(b){return b.review_count})
+    close_coffee_shops = _.filter(coffee_shops, function(m)
+    {
+        var c0 = {latitude: m.latitude, longitude: m.longitude}   // Denver
+        var c1 = {latitude: most_reviewed.latitude, longitude: most_reviewed.longitude}    // Boulder
+        return geolib.getDistance(c0,c1) <= 2000
+    })
+    return close_coffee_shops.length
 }
 
+
 function solution9(){
-    return 'TODO'
+    var businessesInGilbert = _.filter(items, {city: 'Phoenix'})
+    // TODO: find McDonloads and compute the distance between the first two
+    mcd = _.filter(businessesInGilbert, {name: "McDonald's"})
+    return "north: " +  _.max(mcd, function(m){return m.latitude}).full_address + " South: " + _.min(mcd, function(m){return m.latitude}).full_address
 }
 
 function solution10(){
-    return 'TODO'
+   var businessesInGilbert = _.filter(items, {city: 'Phoenix'})
+    // TODO: find McDonloads and compute the distance between the first two
+
+    strbk = _.filter(businessesInGilbert, {name: "Starbucks"})
+    mcd = _.filter(businessesInGilbert, {name: "McDonald's"})
+    no_strbk_close = _.filter(mcd, function(m)
+    {
+            return _.every(strbk, function(s)
+            {
+                var c0 = {latitude: m.latitude, longitude: m.longitude}   // Denver
+                var c1 = {latitude: s.latitude, longitude: s.longitude}    // Boulder
+                return geolib.getDistance(c0,c1) > 5000
+            })
+    })
+    return "There are 3" + no_strbk_close.length + ", there adresses are" + _.pluck(no_strbk_close,"full_address").join(", ")
+    
 }
 
 function run(id, solutionFunc, data){
