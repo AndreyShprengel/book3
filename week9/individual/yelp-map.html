@@ -155,7 +155,13 @@ function solution1(){
         accessToken: 'pk.eyJ1IjoiZG91Ymxlc2hvdyIsImEiOiJjaWZ5Y3B1eTE1MHRidWRtMG9uZXluajg4In0.u5ONW27Ly5cU7M5KYi6Y9Q'
     }).addTo(map)
 
-    // TODO
+   var itemsInPhoenix = _.filter(items, {'city': 'Phoenix'})
+   var mcd = _.filter(itemsInPhoenix, {name: "McDonald's"})
+       _.forEach(mcd, function(d){
+        var latlng = [d['latitude'], d['longitude']]
+        L.marker(latlng).addTo(map)
+    })
+   
 }
 
 function solution2(){
@@ -167,7 +173,11 @@ function solution2(){
         accessToken: 'pk.eyJ1IjoiZG91Ymxlc2hvdyIsImEiOiJjaWZ5Y3B1eTE1MHRidWRtMG9uZXluajg4In0.u5ONW27Ly5cU7M5KYi6Y9Q'
     }).addTo(map)
 
-    // TODO
+    var itemsInPhoenix = _.filter(items, {'city': 'Phoenix'})
+   var strbk = _.filter(itemsInPhoenix, {name: "Starbucks"})
+       _.forEach(strbk, function(d){
+        var latlng = [d['latitude'], d['longitude']]
+        L.marker(latlng).addTo(map)})
 }
 
 function solution3(){
@@ -179,12 +189,23 @@ function solution3(){
         accessToken: 'pk.eyJ1IjoiZG91Ymxlc2hvdyIsImEiOiJjaWZ5Y3B1eTE1MHRidWRtMG9uZXluajg4In0.u5ONW27Ly5cU7M5KYi6Y9Q'
     }).addTo(map)
 
-    // TODO
-    var circle = L.circle([33.45, -112.06], 500, {
+    var itemsInPhoenix = _.filter(items, {'city': 'Phoenix'})
+    var strbk = _.filter(itemsInPhoenix, {name: "Starbucks"})
+       _.forEach(strbk, function(d){
+        var circle = L.circle([d.latitude, d.longitude], 500, {
         color: 'red',
         fillColor: '#f03',
         fillOpacity: 0.5
     }).addTo(map);
+    })
+    var mcd = _.filter(itemsInPhoenix, {name: "McDonald's"})
+    _.forEach(mcd, function(d){
+        var circle = L.circle([d.latitude, d.longitude], 500, {
+        color: 'blue',
+        fillColor: '#f03',
+        fillOpacity: 0.5
+    }).addTo(map);
+    })
 }
 
 function solution4(){
@@ -196,12 +217,15 @@ function solution4(){
         accessToken: 'pk.eyJ1IjoiZG91Ymxlc2hvdyIsImEiOiJjaWZ5Y3B1eTE1MHRidWRtMG9uZXluajg4In0.u5ONW27Ly5cU7M5KYi6Y9Q'
     }).addTo(map)
 
-    // TODO
-    var circle = L.circle([33.45, -112.06], 500, {
+    var itemsInPhoenix = _.filter(items, {'city': 'Phoenix'})
+    var first200Items = _.take(itemsInPhoenix, 200)
+    _.forEach(first200Items, function(d){
+        var circle = L.circle([d.latitude, d.longitude], 500, {
         color: 'red',
         fillColor: '#f03',
-        fillOpacity: 0.5
+        fillOpacity: d.stars * 0.1
     }).addTo(map);
+    })
 }
 
 function solution5(){
@@ -220,16 +244,20 @@ function solution5(){
     // TODO: modify the code below to develop your solution
 
     var itemsInPhoenix = _.filter(items, {'city': 'Phoenix'})
-
+    var strbk = _.filter(itemsInPhoenix, {name: "Starbucks"})
+    _.forEach(strbk, function(d){
+        var latlng1 = cityCenterLatLng
+        var latlng2 = [d.latitude, d.longitude]
+        var latlngs = [latlng1, latlng2]
+        var polyline = L.polyline(latlngs, {color: 'yellow'}).addTo(map); 
+        L.circle(latlng1, 500, {color: 'red'}).addTo(map);
+        L.circle(latlng2, 500, {color: 'blue'}).addTo(map); 
+        })
     // draw a line connecting the first two items
-    var latlng1 = [itemsInPhoenix[0].latitude, itemsInPhoenix[0].longitude]
-    var latlng2 = [itemsInPhoenix[1].latitude, itemsInPhoenix[1].longitude]
-    var latlngs = [latlng1, latlng2]
-    var polyline = L.polyline(latlngs, {color: 'yellow'}).addTo(map);
+  
 
     // draw a circle on the first item
-    L.circle(latlng1, 500, {color: 'red'}).addTo(map);
-    L.circle(latlng2, 500, {color: 'blue'}).addTo(map);
+    
 }
 
 function solution6(){
