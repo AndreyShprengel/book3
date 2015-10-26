@@ -48,17 +48,19 @@ var items   // global scope (i.e., can be accessed in javascript console)
 
 function solution1(){
     groups = _.groupBy(items, function(d){return d.CrsPBADept})
-    groups = _.take(groups, 5 )
     map = _.mapValues(groups, function(g){return g.length})
+    map= _.pairs(map)
+    map = _.take(map,5)
+    map = _.object(map)
+    console.log("map",map)
     
     keys = _.keys(map)
     values = _.values(map)
     
     var data = {
-          labels: ['HIST', 'HONR', 'HUMN', 'IAFS', 'IPHY'],
-          series: [
-            [121,23,42,56,12]
-          ]
+          labels: keys,
+          series:[values]
+          
     }
     new Chartist.Bar('#q1 .answer', data);
 }
