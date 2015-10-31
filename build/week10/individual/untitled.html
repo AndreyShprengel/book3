@@ -60,12 +60,9 @@ function has_5_bussiness_with_5_reviews_nearby(loc, nearby_items){
 return close_rest.length >= 5
 }
 
-function has_a_grocery_storre_nearby(loc, nearby_items){
-    console.log("bry", nearby_items)
-    var grocery= _.filter(nearby_items, function(b){return _.contains(b.categories, "Grocery")})
+function has_some_feature_2(loc){
   // TODO
-  console.log("groc", grocery)
-    return grocery.length >= 1
+  return false
 }
 
 function has_some_feature_3(loc){
@@ -191,8 +188,9 @@ function loadDataThenRunSolutions(){
 
       console.log('scoring all candidate locations')
 
-      scoreAndVisualize(locs, has_5_bussiness_with_5_reviews_nearby, visualize_true_or_false)
-      scoreAndVisualize(locs, has_a_grocery_storre_nearby, visualize_true_or_false, visualize_true_or_false)
+      scoreAndVisualize(locs, has_5_bussiness_with_5_reviews_nearby)
+      //scoreAndVisualize(locs, has_some_feature_2, visualize_true_or_false)
+      //scoreAndVisualize(locs, has_some_feature_3, visualize_true_or_false)
       //scoreAndVisualize(locs, has_some_feature_4, visualize_true_or_false)
       //scoreAndVisualize(locs, has_some_feature_5, visualize_true_or_false)
 
