@@ -12,7 +12,7 @@
 
 <div class="container">
 
-    <h1>Where should we build X?</h1>
+    <h1>Where should we build an Organic grocert store?</h1>
 
     <section id="candidates" class="question">
         <h4>Where are the candidate locations?</h4>
@@ -36,14 +36,21 @@
 // Candidate Locations
 //
 
-function getCandidateLocations(){
+function getCandidateLocations(m,n){
   var locations = []
-  locations.push({latitude: 33.45, longitude: -112.03})
-  locations.push({latitude: 33.45, longitude: -112.04})
-  locations.push({latitude: 33.45, longitude: -112.05})
-  locations.push({latitude: 33.45, longitude: -112.06})
-  locations.push({latitude: 33.45, longitude: -112.07})
-  locations.push({latitude: 33.45, longitude: -112.08})
+  var lat =33.45
+  var lon = 0
+  for(i=0;i<m;i++)
+  {
+      lon =-112.03
+      for(j=0;j<n;j++)
+      {
+            locations.push({latitude: lat, longitude: lon})
+            lon += -.01
+      }
+      lat +=.01
+  }
+
   return locations
 }
 
@@ -61,26 +68,33 @@ return close_rest.length >= 5
 }
 
 function has_a_grocery_storre_nearby(loc, nearby_items){
-    console.log("bry", nearby_items)
     var grocery= _.filter(nearby_items, function(b){return _.contains(b.categories, "Grocery")})
   // TODO
-  console.log("groc", grocery)
     return grocery.length >= 1
 }
 
-function has_some_feature_3(loc){
-  // TODO
+function has_atleast_1_school_nearby(loc, nearby_items){
+    var school= _.filter(nearby_items, function(b){return _.some(b.categories, function(d) 
+        {
+            return _.contains(d, "School")
+        })})
+    return school.length >= 1
   return true
 }
 
-function has_some_feature_4(loc){
-  // TODO
-  return false
+function has_less_than_5_resruarants_nearby(loc){
+      var rest= _.filter(nearby_items, function(b){return _.some(b.categories, function(d) 
+        {
+            return _.contains(d, "Restaurants")
+        })})
+    return rest.length <= 5
+  return true
 }
 
-function has_some_feature_5(loc){
+function has_other_organic_shops_nearby(loc){
+  var grocery= _.filter(nearby_items, function(b){return _.contains(b.name, "Organic")})
   // TODO
-  return false
+    return grocery.length >= 1
 }
 
 //
@@ -96,6 +110,7 @@ function scoreAndVisualize(locs, scoreFunc, vizFunc){
       var loc2  = _.pick(item, ['latitude', 'longitude'])
       var d = geolib.getDistance(loc, loc2)
       return geolib.convertUnit('km', d) < .5
+      
   })
       return scoreFunc(loc, nearby_items)})
   console.timeEnd('scoring ' + scoreFunc.name)
@@ -170,7 +185,8 @@ var items = []
 var nearby_items = []
 function loadDataThenRunSolutions(){
 
-  var locs = getCandidateLocations()
+  var locs = getCandidateLocations(2,5)
+  console.log("locs",locs)
   visualize($('#candidates .map')[0], locs)
 
   $.get({url: 'http://bigdatahci2015.github.io/data/yelp/yelp_academic_dataset_business.phoenix.json.lines.txt'})
@@ -193,6 +209,9 @@ function loadDataThenRunSolutions(){
 
       scoreAndVisualize(locs, has_5_bussiness_with_5_reviews_nearby, visualize_true_or_false)
       scoreAndVisualize(locs, has_a_grocery_storre_nearby, visualize_true_or_false, visualize_true_or_false)
+      scoreAndVisualize(locs, has_atleast_1_school_nearby, visualize_true_or_false, visualize_true_or_false)
+      scoreAndVisualize(locs, has_less_than_5_resruarants_nearby, visualize_true_or_false, visualize_true_or_false)
+      scoreAndVisualize(locs, has_other_organic_shops_nearby, visualize_true_or_false, visualize_true_or_false)
       //scoreAndVisualize(locs, has_some_feature_4, visualize_true_or_false)
       //scoreAndVisualize(locs, has_some_feature_5, visualize_true_or_false)
 
