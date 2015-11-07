@@ -95,9 +95,9 @@ function analyze(events){
   ask(what_hour_of_the_day_do_most_emails_come, events)
   ask(what_hour_of_the_day_do_least_emails_come, events)
   ask(what_is_the_average_emails_per_hour, events)
-  ask(question8, events)
-  ask(question9, events)
-  ask(question10, events)
+  ask(do_i_get_more_email_on_weekends_or_during_the_week, events)
+  ask(how_many_emails_during_the_week, events)
+  ask(how_many_emails_during_the_weekend, events)
 }
 
 function when_did_i_start_collecting(events){
@@ -170,16 +170,29 @@ function what_is_the_average_emails_per_hour(events){
   return _.sum(groups, function(g){return g.length})/_.size(groups)
 }
 
-function question8(events){
-  return 'I ...'
+function do_i_get_more_email_on_weekends_or_during_the_week(events){
+  var groups = _.groupBy(_.values(events.gmail), function(e){return moment(e.Date).format("dddd") == "Saturday" 
+    || moment(e.Date).format("dddd") == "Sunday"})
+    
+  var map = _.mapValues(groups, function(g){return g.length})
+  map = _.pairs(map)
+  var busy = _.max(map, function(p){return p[1]})
+  console.log("busy", busy[0])
+  if(busy[0] == true){return "WEEKEND"}
+  else  {return "WEEK"}
+
 }
 
-function question9(events){
-  return 'I ...'
+function how_many_emails_during_the_week(events){
+    var week = _.filter(_.values(events.gmail), function(e){return moment(e.Date).format("dddd") != "Saturday" 
+      && moment(e.Date).format("dddd") != "Sunday"})
+    return week.length
 }
 
-function question10(events){
-  return 'I ...'
+function how_many_emails_during_the_weekend(events){
+    var week = _.filter(_.values(events.gmail), function(e){return moment(e.Date).format("dddd") == "Saturday" 
+      && moment(e.Date).format("dddd") == "Sunday"})
+    return week.length
 }
 
 // initialize the parallax effect
