@@ -167,7 +167,7 @@ function what_hour_of_the_day_do_least_emails_come(events){
 
 function what_is_the_average_emails_per_hour(events){
   var groups = _.groupBy(_.values(events.gmail), function(e){return moment(e.Date).format("HH")})
-  return _.sum(groups, function(g){return g.length})/_.size(groups)
+  return _.sum(groups, function(g){return g.length})/24
 }
 
 function do_i_get_more_email_on_weekends_or_during_the_week(events){
