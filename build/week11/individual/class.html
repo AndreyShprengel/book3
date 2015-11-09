@@ -121,11 +121,11 @@ function analyze(events){
 
   ask(how_many_individuals_analyzed_so_far, events)
   ask(whose_data_is_available, events)
-  ask(question1, events)
-  ask(question2, events)
-  ask(question3, events)
-  ask(question4, events)
-  ask(question5, events)
+  ask(what_is_the_average_number_of_emails_per_person, events)
+  ask(what_is_the_average_number_of_emails_per_day, events)
+  ask(what_is_the_average_number_of_emails_per_hour, events)
+  ask(at_what_hour_do_most_people_get_the_most_emails, events)
+  ask(at_what_hour_do_most_people_get_the_least_emails, events)
   ask(question6, events)
   ask(question7, events)
   ask(question8, events)
@@ -141,24 +141,69 @@ function whose_data_is_available(events){
   return _.keys(events).join(' , ')
 }
 
-function question1(events){
-  return '...'
+function what_is_the_average_number_of_emails_per_person(events){
+    var pairs = _.pairs(events)
+    pairs = _.filter(pairs, function(p){return p[1] != null})
+    var map= _.mapValues(pairs, function(person)
+    {
+        return _.values(person[1].gmail).length
+        })
+  return _.sum(map, function(value,key){return value})/_.size(map)
 }
 
-function question2(events){
-  return '...'
+function what_is_the_average_number_of_emails_per_day(events){
+    var gmail = _.compact(_.pluck(events, "gmail"))
+    var map = _.mapValues(gmail, function(p)
+    {
+        var groups = _.groupBy(p, function(e){return moment(e.Date).format("YYYY-MM-DD")})
+        return _.sum(groups, function(g){return g.length})/_.size(groups)
+    })
+  return _.sum(map, function(value,key){return value})/_.size(map)
 }
 
-function question3(events){
-  return '...'
+function what_is_the_average_number_of_emails_per_hour(events){
+    var gmail = _.compact(_.pluck(events, "gmail"))
+    var map = _.mapValues(gmail, function(p)
+    {
+        var groups = _.groupBy(p, function(e){return moment(e.Date).format("YYYY-MM-DD HH")})
+        return _.sum(groups, function(g){return g.length})/24
+    })
+  return _.sum(map, function(value,key){return value})/_.size(map)
 }
 
-function question4(events){
-  return '...'
+function at_what_hour_do_most_people_get_the_most_emails(events){
+    var gmail = _.compact(_.pluck(events, "gmail"))
+    var map = _.mapValues(gmail, function(p)
+    {
+        var groups = _.groupBy(p, function(e){return moment(e.Date).format("HH")})
+        var map = _.mapValues(groups, function(g){return g.length})
+        map = _.pairs(map)
+        var busy_day = _.max(map,function(p){return p[1]})
+        return busy_day[0]
+    })
+    var groups = _.groupBy(map, function(value,key){return value})
+    var pairs = _.pairs(groups)
+    
+    var hour =  _.max(pairs,function(p){return p[1].length})
+    return hour[0]
 }
 
-function question5(events){
-  return '...'
+function at_what_hour_do_most_people_get_the_least_emails(events){
+      var gmail = _.compact(_.pluck(events, "gmail"))
+    var map = _.mapValues(gmail, function(p)
+    {
+        var groups = _.groupBy(p, function(e){return moment(e.Date).format("HH")})
+        var map = _.mapValues(groups, function(g){return g.length})
+        map = _.pairs(map)
+        console.log("ppl pairs" ,map)
+        var busy_day = _.min(map,function(p){return p[1]})
+        return busy_day[0]
+    })
+    var groups = _.groupBy(map, function(value,key){return value})
+    var pairs = _.pairs(groups)
+    
+    var hour =  _.max(pairs,function(p){return p[1].length})
+    return hour[0]
 }
 
 function question6(events){
