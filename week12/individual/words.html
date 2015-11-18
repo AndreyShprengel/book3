@@ -96,8 +96,7 @@ $.ajax({url: 'https://big-data-hci-hackathon.firebaseapp.com/data/100yr_ngrams_1
 
   items = csv2jsonArray(rawdata)
   console.log('number of items loaded:', items.length)
-  console.log('first item:', items[0])
-
+  console.log('first item:', items[2])
   analyze()
 
  })
@@ -144,47 +143,136 @@ function analyze(){
 }
 
 function example(){
+
   return _.unique(_.pluck(items, 'decade')).length
 }
 
 function func1(){
-  return '...'
+    var datawords = _.filter(items, function(word){return word.word =="data"})
+    var popularity = _.map(datawords, function(data){return data.decade + ": " + data.rank})
+  return popularity.join(", ")
 }
 
 function func2(){
-  return '...'
+   var oilwords = _.filter(items, function(word){return word.word =="oil"})
+  return _.min(oilwords, function(dec){return dec.rank}).decade
 }
 
 function func3(){
-  return '...'
+    var datawords = _.filter(items, function(word){return word.word =="feminism"})
+    var popularity = _.map(datawords, function(data){return data.decade + ": " + data.rank})
+ return popularity.join(", ")
 }
 
 function func4(){
-  return '...'
+    var datawords = _.filter(items, function(word){return word.word =="communism"})
+    var popularity = _.map(datawords, function(data){return data.decade + ": " + data.rank})
+ return popularity.join(", ")
 }
 
 function func5(){
-  return '...'
+  var early = _.filter(items, function(word){return word.decade <= 1950})
+  var late = _.filter(items, function(word){return word.decade > 1950})
+  early = _.sortBy(early, function(word){return word.rank})
+  late = _.sortBy(late, function(word){return word.rank})
+  early = _.take(early,100)
+  late = _.take(late, 100)
+  
+  early = _.uniq(_.pluck(early, "word"))
+  late = _.uniq(_.pluck(late, "word"))
+  return _.difference(early,late).join(", ")
 }
 
 function func6(){
-  return '...'
+    var early = _.filter(items, function(word){return word.decade <= 1950})
+  var late = _.filter(items, function(word){return word.decade > 1950})
+  early = _.sortBy(early, function(word){return word.rank})
+  late = _.sortBy(late, function(word){return word.rank})
+  early = _.take(early,100)
+  late = _.take(late, 100)
+  
+  early = _.uniq(_.pluck(early, "word"))
+  late = _.uniq(_.pluck(late, "word"))
+  return _.difference(late, early).join(", ")
 }
 
 function func7(){
-  return '...'
+  var internet = _.filter(items, function(word){return word.word =="internet"})
+  decade = _.min(internet, function(d){return d.decade}).decade
+  var groups = _.groupBy(items, "word")
+  var map = _.mapValues(groups, function(word){return _.min(word, function(d){return d.decade}).decade})
+  var pairs = _.pairs(map)
+  pairs = _.filter(pairs, function(pair){return pair[1] == decade})
+  var words = _.map(pairs, function(p){return p[0]})
+  return words.join(", ")
 }
 
 function func8(){
-  return '...'
+  var oil = _.filter(items, function(word){return word.word =="oil"})
+  oil = _.sortBy(oil, function(d){return d.decade})
+
+  var gold = _.filter(items, function(word){return word.word =="gold"})
+  gold = _.sortBy(gold, function(d){return d.decade})
+  var decade
+  _.forEach(gold, function(d){
+      gdec = d.decade
+      oil_same = _.find(oil, function(o){
+        return o.decade == gdec})
+      if(d.rank < oil_same.rank){decade = gdec}  
+
+    })
+  return decade
 }
 
 function func9(){
-  return '...'
+  var first = _.filter(items, function(word){return word.decade = 1900})
+  var last = _.filter(items, function(word){return word.decade = 2000})
+  first = _.sortBy(first, function(word){return word.rank})
+  last = _.sortBy(last, function(word){return word.rank}).reverse()
+  
+  first = _.take(first, 500)
+  last = _.take(last, 500)
+  
+  console.log("last", last)
+  first = _.uniq(_.pluck(first, "word"))
+  last = _.uniq(_.pluck(last, "word"))
+  
+  
+  return _.intersection(first, last).join(", ")
 }
 
 function func10(){
-  return '...'
+  var warwords = _.filter(items, function(word){return word.word =="war"})
+  warwords = _.sortBy(warwords, function(d){return d.decade})
+  var warstring = ""
+  for(x=1; x < warwords.length; x++)
+  {
+    if (warwords[x].rank > warwords[x-1].rank)
+    {
+      warstring += "1"
+    }
+    else {warstring += "0"}
+  }
+  console.log("warstring", warstring)
+  var groups = _.groupBy(items, "word")
+  map = _.mapValues(groups, function(word){
+      var sorted = _.sortBy(word, function(d){return d.decade})
+      var change_string = ""
+      for(x=1; x < sorted.length; x++)
+      {
+        if (sorted[x].rank > sorted[x-1].rank)
+        {
+          change_string += "1"
+        }
+        else {change_string += "0"}
+      }
+      return change_string
+    })
+    
+  pairs = _.pairs(map)
+  pairs = _.filter(pairs, function(pair){return pair[1] == warstring})
+  var words = _.map(pairs, function(p){return p[0]})
+  return words.join(", ")
 }
 
 // initialize the parallax effect
