@@ -1,0 +1,206 @@
+<html>
+<head>
+  <title>Zayo</title>
+    <style>
+        .answer {
+            min-height: 50px
+        }
+        section{
+          padding: 10px;
+          margin-bottom: 12px
+        }
+        #title {
+          position: absolute;
+          padding: 20px;
+          font-size: 64px;
+          font-weight: bolder;
+          color: white;
+          top: 50px;
+          left: 0px;
+          text-shadow: -2px 0 black, 0 2px black, 5px 0 black, 0 -2px black
+        }
+        #title .authors {
+          padding: 20px;
+          font-size: 32px;
+          font-weight: bolder;
+          color: #DDD;
+          text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black
+        }
+        #tweets {
+          min-height: 300px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/tomorrow.min.css">
+</head>
+<body>
+
+  <div class="parallax-container"  style="height:300px">
+    <div class="parallax">
+      <img src="http://res.cloudinary.com/craftml/image/upload/c_scale,e_brightness:-62,w_1000/v1447038536/books_nh4k05.jpg">
+      <h1 id="title">Zayo anylsis
+        <div class="authors">by Andrew</div>
+        <div class="authors">by Will</div>
+        <div class="authors">by Andrey</div>
+      </h1>
+    </div>
+  </div>
+
+  <div class="section white container flow-text">
+      <div class="switch">
+        Source Code
+        <label>
+          <input type="checkbox">
+          <span class="lever"></span>
+        </label>
+      </div>
+
+      <div id="questions" class="col s10 collection">
+      </div>
+  </div>
+
+  <script src="https://cdn.firebase.com/js/client/2.3.1/firebase.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+  <script>
+
+function toggleSourecode(){
+  $('pre').each(function(){
+    if ($(this).height()){
+        $(this).attr('data-height', $(this).height())
+        $(this).height(0)
+    } else {
+      $(this).height($(this).attr('data-height'))
+    }
+  })
+}
+$('.switch input').click(toggleSourecode)
+
+function csv2jsonArray(rawdata){
+  console.log('converting csv to json array')
+  var lines = rawdata.trim().split('\n')
+
+  var fields = lines[0].split(',')
+  console.log("feilds", fields)
+  var rows = _.rest(lines)
+  return _.map(rows, function(row){
+    var toks = row.split(',')
+    //console.log("toks", toks[1])
+    var item = _.zipObject(fields, toks)
+    return item
+  })
+}
+
+var items
+$.ajax({url: 'data.csv'})
+ .done(function(rawdata){
+
+  items = csv2jsonArray(rawdata)
+  console.log('number of items loaded:', items.length)
+  console.log('first item:', items[0])
+  analyze()
+
+ })
+ .fail(function(err){
+     console.error(err)
+ })
+
+function ask(text, func){
+  var answer = func(items)
+
+  // html element to display the answer
+  var answerHtml = '<div class="collection-item answer">' +
+      '<h4>' + text + '</h4>' +
+      '<div>' + answer + '</div>' +
+      '<pre><code>' + func.toString() + '</code></pre>' +
+    '</div>'
+
+  // append to #quetions
+  $('#questions').append(answerHtml)
+}
+
+function analyze(){
+  ask('how many cosutmers in the dataset?', example)
+  ask('Of the Tranzact accounts that have services: What industries/verticals spend the most money and on what products/services?', func1)
+  ask('If Zayo only had enough team members to focus on two products, which products would you prioritize?', func2)
+  ask('If Zayo only had 5 representatives, which states would you prioritize for in­person meetings? ', func3)
+  ask('If Zayo sent quotes to all Tranzact accounts, how would you prioritize the customer count list? (And list the prioritized accounts from 1 to ####)',func4)
+  ask('Of the Tranzact accounts without services: How would you prioritize which accounts to go after first and which products would they potentially buy?',func5)
+
+  $('pre code').each(function(i, block) {
+    hljs.highlightBlock(block);
+  })
+  toggleSourecode()
+}
+
+function example(){
+
+  return _.unique(_.pluck(items, 'Name/ID')).length
+}
+
+function func1(){
+    var clean = _.filter(items, function(n){return n.Product != "#N/A"})
+    var groups = _.groupBy(clean, "Industry")
+    //var ind_spending = _.mapValues(groups, function(ind){return _.sum(ind, function(prod){return prod.mrr})})
+    pairs = _.pairs(groups)
+    _.forEach(pairs, function(ind){
+        var prods = _.groupBy(ind[1], "Product")
+        var map = _.mapValues(prods, function(p){return _.sum(p,function(x){return x["Total BRR"]})})
+        prods = _.pairs(map)
+        prods = _.sortBy(prods, function(p){return p[1]}).reverse()
+        ind[1] = prods;
+        })
+    pairs = _.sortBy(pairs, function(p){
+        return _.sum(p[1],function(product){return product[1]})
+    }).reverse()
+    var r_string = _.map(pairs,function(p){
+        var str = "<p><b>"+p[0]+"</b>" + ": "
+        _.forEach(p[1],function(prod){
+            str += prod[0] + ", "
+        })
+        
+        return str + "</p>" 
+    })
+    
+    
+    return "The top spending industries and thier top products in order are: \n" + r_string.join("\n \n")
+}
+
+function func2(){
+    var clean = _.filter(items, function(n){return n.Product != "#N/A"})
+    var groups = _.groupBy(clean, "Product")
+    var map = _.mapValues(groups, function(g){return _.sum(g,function(p){return p["Total BRR"]})})
+    var prods = _.pairs(map)
+    prods = _.sortBy(prods, function(p){return p[1]}).reverse()
+    prods = _.take(prods, 2)
+
+    return _.map(prods, function(p){return p[0]}).join(", ")
+}
+
+function func3(){
+    return '...'
+}
+
+function func4(){
+    return '...'
+}
+
+function func5(){
+    return '...'
+}
+
+
+
+// initialize the parallax effect
+$(document).ready(function(){
+    $('.parallax').parallax()
+})
+
+    </script>
+
+</body>
+</html>

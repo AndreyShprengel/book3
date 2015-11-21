@@ -74,7 +74,13 @@ function example3(){
 }
 
 function func1(){
-  return '...'
+    var sample = _.flatten(_.pluck(items, "Samples"))
+    //console.log("sample", items)
+    return _.uniq( _.filter(sample, function(d){
+    return d > 0
+  })).join(', ')
+
+  
 }
 
 function func2(){
@@ -82,19 +88,41 @@ function func2(){
 }
 
 function func3(){
-  return '...'
+  var obs = _.find(items, function(ob){return ob.Ping_time == "09:57:18"})
+  //console.log("obsL", obs)
+  var sevens = _.filter(obs.Samples, function(s){
+    //console.log("s",s)
+    return s == "7.000000"})
+  return sevens.length
 }
 
 function func4(){
-  return '...'
+  var groups = _.groupBy(items, "Ping_time")
+  var map = _.mapValues(groups, function(obs){
+    return _.filter(obs[0].Samples, function(s){ 
+      return s == 3}).length
+    })
+  var pairs = _.pairs(map)
+  pairs = _.sortBy(pairs, function(p) {return p[1]}).reverse()
+  
+
+  return 'the one take at ' + pairs[0][0]
 }
 
 function func5(){
-  return '...'
+  var zeros = _.filter(items, function(obs){return _.every(obs.Samples, function(s){return s <= 0})})
+  return zeros.length
 }
 
 function func6(){
-  return '...'
+  var sample = _.flatten(_.pluck(items, "Samples"))
+  var groups = _.groupBy(sample, _.value)
+  console.log("groups", groups)
+  var map = _.mapValues(groups,function(g){return g.length})
+  var pairs = _.pairs(map)
+  pairs = _.sortBy(pairs, function(p) {return p[1]}).reverse()
+
+  return pairs[0][0]
 }
 
 function func7(){
@@ -103,7 +131,12 @@ function func7(){
   // the location of the first item (i.e., measurement data)
   // you need to adapt this code to answer the question
 
-  var first = items[0]
+  var ny = {latitude:40.7127 , longitude: -74.}
+
+  var first = _.min(items, function(n){
+      var loc = {latitude: n.Latitude,  longitude: n.Longitude}
+      return geolib.getDistance(ny,loc)
+  })
   var pos = [first.Latitude, first.Longitude]
   var el = $(this).find('.viz')[0]    // lookup the element that will hold the map
   $(el).height(500) // set the map to the desired height
@@ -114,7 +147,10 @@ function func7(){
       fillColor: '#f03',
       fillOpacity: 0.5
   }).addTo(map);
-  return '...'
+  var loc = {latitude: first.Latitude,  longitude: first.Longitude}
+
+  return geolib.getDistance(ny,loc)/1000 + 'km'
+
 }
 
 function func8(){
