@@ -249,6 +249,8 @@ function solution5(){
         var latlng1 = cityCenterLatLng
         var latlng2 = [d.latitude, d.longitude]
         var latlngs = [latlng1, latlng2]
+        console.log("lats", latlngs)
+
         var polyline = L.polyline(latlngs, {color: 'yellow'}).addTo(map); 
         L.circle(latlng1, 500, {color: 'red'}).addTo(map);
         L.circle(latlng2, 500, {color: 'blue'}).addTo(map); 
