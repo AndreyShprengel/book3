@@ -141,6 +141,12 @@ function func7(){
   var el = $(this).find('.viz')[0]    // lookup the element that will hold the map
   $(el).height(500) // set the map to the desired height
   var map = createMap(el, pos, 5)
+  
+  var latlngs = [pos, [ny.latitude, ny.longitude]]
+  console.log("lats", latlngs)
+  
+  //var polyline = L.polyline(latlngs, {color: 'yellow'}).addTo(map); 
+
 
   var circle = L.circle(pos, 500, {
       color: 'red',
@@ -148,27 +154,102 @@ function func7(){
       fillOpacity: 0.5
   }).addTo(map);
   var loc = {latitude: first.Latitude,  longitude: first.Longitude}
+  
 
   return geolib.getDistance(ny,loc)/1000 + 'km'
 
 }
 
 function func8(){
+  var first = items[0]
+  var pos = [first.Latitude, first.Longitude]
+  var el = $(this).find('.viz')[0]    // lookup the element that will hold the map
+  $(el).height(500) // set the map to the desired height
+  var map = createMap(el, pos, 11)
+  
+  _.forEach(items, function(loc){
+    pos = [loc.Latitude, loc.Longitude]
+    var circle = L.circle(pos, 500, {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.1,
+        opacity: 0.1
+    }).addTo(map);})
   return '...'
 }
 
 function func9(){
+  
+  var first = items[0]
+  var pos = [first.Latitude, first.Longitude]
+  var el = $(this).find('.viz')[0]    // lookup the element that will hold the map
+  $(el).height(500) // set the map to the desired height
+  var map = createMap(el, pos, 11)
+  
+  _.forEach(items, function(loc){
+      if(_.some(loc.Samples,function(s){
+          return s == "-9.9e+37"}))
+      {
+        //console.log("tru")
+        pos = [loc.Latitude, loc.Longitude]
+        var circle = L.circle(pos, 500, {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.5
+        }).addTo(map);
+      }
+  })
   return '...'
-}
+  }
 
 function func10(){
   return '...'
 }
 
 function func11(){
+    var first = items[0]
+  var pos = [first.Latitude, first.Longitude]
+  var el = $(this).find('.viz')[0]    // lookup the element that will hold the map
+  $(el).height(500) // set the map to the desired height
+  var map = createMap(el, pos, 11)
+  
+  _.forEach(items, function(loc){
+      if(_.some(loc.Samples,function(s){
+          return s == 1 || s == 3 || s == 4}))
+      {
+        //console.log("tru")
+        pos = [loc.Latitude, loc.Longitude]
+        var circle = L.circle(pos, 500, {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.5
+        }).addTo(map);
+      }
+  })
   return '...'
-}
+  }
+
+
 
 function func12(){
+    var first = items[0]
+  var pos = [first.Latitude, first.Longitude]
+  var el = $(this).find('.viz')[0]    // lookup the element that will hold the map
+  $(el).height(500) // set the map to the desired height
+  var map = createMap(el, pos, 11)
+  
+  _.forEach(items, function(loc){
+      if(_.some(loc.Samples,function(s){
+          return s == 20 || s == 13 || s == 7}))
+      {
+        console.log("tru")
+        pos = [loc.Latitude, loc.Longitude]
+        var circle = L.circle(pos, 500, {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.5
+        }).addTo(map);
+      }
+  })
   return '...'
-}
+  }

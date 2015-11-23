@@ -1,3 +1,100 @@
+ashprengel
+
+
+Search Drive
+
+Drive
+.
+Folder Path
+My Drive
+BigData
+Zayo
+NEW 
+Folders and views
+My Drive
+Shared with me
+Google Photos
+Recent
+Starred
+Trash
+Name
+Owner
+Last modified
+File size
+
+zayohtml.zip
+me
+Nov 21, 2015
+47 KB
+
+zayo.html
+Andrew Berumen
+1:49 pm
+8 KB
+
+Untitled spreadsheet
+me
+Nov 18, 2015
+—
+
+Tranzact Accounts - For CU - Customer Account - Details.csv
+Andrew Berumen
+Nov 21, 2015
+—
+
+Tranzact Accounts - For CU - Customer Account - Details.csv
+Andrew Berumen
+Nov 19, 2015
+359 KB
+
+Question 2.png
+Andrew Berumen
+Nov 18, 2015
+136 KB
+
+func4_visualization.png
+Andrew Berumen
+2:01 pm
+195 KB
+
+func3_visualization.png
+Andrew Berumen
+1:58 pm
+81 KB
+
+data.csv
+Andrew Berumen
+Nov 18, 2015
+—
+
+data.csv
+Andrew Berumen
+Nov 18, 2015
+—
+
+data.csv
+me
+Nov 18, 2015
+152 KB
+
+Anylsis
+me
+Nov 15, 2015
+—
+HTML
+zayo.html
+Details
+Activity
+TODAY
+A
+Andrew Berumenuploaded an item
+1:49 PM
+HTML
+zayo.html
+No recorded activity before November 22, 2015
+1 GB of 15 GB used
+Upgrade storage
+
 <html>
 <head>
   <title>Zayo</title>
@@ -85,7 +182,7 @@ function csv2jsonArray(rawdata){
   var lines = rawdata.trim().split('\n')
 
   var fields = lines[0].split(',')
-  console.log("feilds", fields)
+  console.log("fields", fields)
   var rows = _.rest(lines)
   return _.map(rows, function(row){
     var toks = row.split(',')
@@ -94,6 +191,7 @@ function csv2jsonArray(rawdata){
     return item
   })
 }
+
 
 var items
 $.ajax({url: 'data.csv'})
@@ -182,11 +280,52 @@ function func2(){
 }
 
 function func3(){
-    return '...'
+    var clean = _.filter(items, function(n){return n['State A'] != "#N/A" && n['State A'] != "" && n['State A'] != "Unknown"})
+    var groups = _.groupBy(clean, "State A")
+    //console.log('groups', groups)
+    var map = _.mapValues(groups, function(d){
+      return _.sum(d, function(e){
+        return e['Total BRR'] - e['Total MRR']
+      })
+    })
+    var pairs = _.pairs(map)
+    pairs = _.sortBy(pairs, function(d){
+      return d[1]
+    }).reverse()
+    pairs = _.take(pairs, 5)
+    //console.log('pairs', pairs)
+
+    return "Here are the states that should be considered, according to their respective total BRR minues their total MRR, to return their end revenue: " +pairs.join("; ")
 }
 
 function func4(){
-    return '...'
+  //var clean = _.filter(items, function(n){return n['State A'] != "#N/A" && n['State A'] != "" && n['State A'] != "Unknown"})
+  var groups = _.groupBy(items, function(d){
+    return d['Name/ID']
+  })
+  console.log('groups', groups)
+  var map  = _.mapValues(groups, function(d){
+    return _.sum(d, function(e){
+      return e['Total MRR']
+    })
+  })
+ // console.log('map', map)
+  var pairs = _.pairs(map)
+  pairs = _.sortBy(pairs, function(d){
+    return d[1]
+  }).reverse()
+    pairs = _.take(pairs, 100)
+    console.log('pairs', pairs)
+    var r_string = _.map(pairs,function(p){
+        var str = "ID: "+p[0] + ", Total MRR: " +p[1]
+        
+        return str 
+    })
+    return r_string.join("; ")
+    /*return _.forEach(pairs, function(d){
+      console.log('ID: ' +d[0] +", Total MRR: " +d[1])
+      //
+    })*/
 }
 
 function func5(){
