@@ -120,11 +120,11 @@ function ask(text, func){
 }
 
 function analyze(){
-  ask('question1?', func1)
-  ask('question2?', func2)
+  ask('When did the word gun overtake the word sword', func1)
+  ask('Did electricty reduce the use of the word kerosene and candle', func2)
   ask('How did cars change the use of the word horse?', func3)
-  ask('question4?', func4)
-  ask('question5?', func5)
+  ask('Did the concoern over climate change dimimsh the concern over the price of oil?', func4)
+  ask('Did the popularity of different sports change over time?', func5)
 
   $('pre code').each(function(i, block) {
     hljs.highlightBlock(block);
@@ -133,11 +133,11 @@ function analyze(){
 }
 
 function func1(){
-  return '...'
+  return '<iframe name="ngram_chart" src="https://books.google.com/ngrams/interactive_chart?content=pistol%2C+gun%2C+sword+&year_start=1800&year_end=2000&corpus=15&smoothing=3&share=&direct_url=t1%3B%2Cpistol%3B%2Cc0%3B.t1%3B%2Cgun%3B%2Cc0%3B.t1%3B%2Csword%3B%2Cc0" width=900 height=500 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no></iframe>'
 }
 
 function func2(){
-  return '...'
+  return '<iframe name="ngram_chart" src="https://books.google.com/ngrams/interactive_chart?content=candle%2Clight+bulb%2Celectricity%2C+kerosene&year_start=1800&year_end=2000&corpus=15&smoothing=3&share=&direct_url=t1%3B%2Ccandle%3B%2Cc0%3B.t1%3B%2Clight%20bulb%3B%2Cc0%3B.t1%3B%2Celectricity%3B%2Cc0%3B.t1%3B%2Ckerosene%3B%2Cc0" width=900 height=500 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no></iframe>'
 }
 
 function func3(){
@@ -145,11 +145,11 @@ function func3(){
 }
 
 function func4(){
-  return '...'
+  return '<iframe name="ngram_chart" src="https://books.google.com/ngrams/interactive_chart?content=climate+change%2Cprice+of+oil&year_start=1800&year_end=2000&corpus=15&smoothing=3&share=&direct_url=t1%3B%2Cclimate%20change%3B%2Cc0%3B.t1%3B%2Cprice%20of%20oil%3B%2Cc0" width=900 height=500 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no></iframe>'
 }
 
 function func5(){
-  return '...'
+  return '<iframe name="ngram_chart" src="https://books.google.com/ngrams/interactive_chart?content=baseball%2Cbasketball%2Cfootball%2Csoccer%2C+tennis&year_start=1800&year_end=2000&corpus=15&smoothing=3&share=&direct_url=t1%3B%2Cbaseball%3B%2Cc0%3B.t1%3B%2Cbasketball%3B%2Cc0%3B.t1%3B%2Cfootball%3B%2Cc0%3B.t1%3B%2Csoccer%3B%2Cc0%3B.t1%3B%2Ctennis%3B%2Cc0" width=900 height=500 marginwidth=0 marginheight=0 hspace=0 vspace=0 frameborder=0 scrolling=no></iframe>'
 }
 
 // initialize the parallax effect
